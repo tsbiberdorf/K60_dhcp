@@ -8,7 +8,7 @@
 !!GlobalInfo
 product: Peripherals v7.0
 processor: MK60DN512xxx10
-package_id: MK60DN512VMD10
+package_id: MK60DN512VLL10
 mcu_data: ksdk2_0
 processor_version: 7.0.1
 functionalGroups:
