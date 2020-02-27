@@ -50,7 +50,8 @@ processor_version: 7.0.1
 #define MCG_PLL_DISABLE                                   0U  /*!< MCGPLLCLK disabled */
 #define OSC_CAP0P                                         0U  /*!< Oscillator 0pF capacitor load */
 #define OSC_ER_CLK_DISABLE                                0U  /*!< Disable external reference clock */
-#define SIM_ENET_1588T_CLK_SEL_CLKIN_CLK                  3U  /*!< SDHC clock select: CLKIN (External bypass clock) */
+#define SIM_ENET_1588T_CLK_SEL_OSCERCLK_CLK               2U  /*!< SDHC clock select: OSCERCLK clock */
+#define SIM_ENET_RMII_CLK_SEL_CLKIN_CLK                   1U  /*!< SDHC clock select: CLKIN (External bypass clock) */
 #define SIM_OSC32KSEL_RTC32KCLK_CLK                       2U  /*!< OSC32KSEL select: RTC32KCLK clock (32.768kHz) */
 #define SIM_PLLFLLSEL_MCGFLLCLK_CLK                       0U  /*!< PLLFLL select: MCGFLLCLK clock */
 #define SIM_PLLFLLSEL_MCGPLLCLK_CLK                       1U  /*!< PLLFLL select: MCGPLLCLK clock */
@@ -95,7 +96,7 @@ called_from_default_init: true
 outputs:
 - {id: Bus_clock.outFreq, value: 48 MHz}
 - {id: Core_clock.outFreq, value: 96 MHz}
-- {id: ENET1588TSCLK.outFreq, value: 50 MHz}
+- {id: ENET1588TSCLK.outFreq, value: 24 MHz}
 - {id: Flash_clock.outFreq, value: 24 MHz}
 - {id: FlexBus_clock.outFreq, value: 48 MHz}
 - {id: LPO_clock.outFreq, value: 1 kHz}
@@ -103,6 +104,7 @@ outputs:
 - {id: MCGIRCLK.outFreq, value: 32.768 kHz}
 - {id: OSCERCLK.outFreq, value: 24 MHz}
 - {id: PLLFLLCLK.outFreq, value: 96 MHz}
+- {id: RMIICLK.outFreq, value: 50 MHz}
 - {id: System_clock.outFreq, value: 96 MHz}
 settings:
 - {id: MCGMode, value: PEE}
@@ -117,6 +119,7 @@ settings:
 - {id: MCG_C2_RANGE0_CFG, value: Very_high}
 - {id: MCG_C2_RANGE0_FRDIV_CFG, value: Very_high}
 - {id: OSC_CR_ERCLKEN_CFG, value: Enabled}
+- {id: RMIISrcConfig, value: 'yes'}
 - {id: RTC_CR_OSCE_CFG, value: Enabled}
 - {id: RTC_CR_OSC_CAP_LOAD_CFG, value: SC18PF}
 - {id: SIM.OSC32KSEL.sel, value: RTC.RTC32KCLK}
@@ -124,8 +127,9 @@ settings:
 - {id: SIM.OUTDIV3.scale, value: '2'}
 - {id: SIM.OUTDIV4.scale, value: '4'}
 - {id: SIM.PLLFLLSEL.sel, value: MCG.MCGPLLCLK}
+- {id: SIM.RMIICLKSEL.sel, value: SIM.ENET_1588_CLK_EXT}
 - {id: SIM.SDHCSRCSEL.sel, value: OSC.OSCERCLK}
-- {id: SIM.TIMESRCSEL.sel, value: SIM.ENET_1588_CLK_EXT}
+- {id: SIM.TIMESRCSEL.sel, value: OSC.OSCERCLK}
 sources:
 - {id: OSC.OSC.outFreq, value: 24 MHz, enabled: true}
 - {id: SIM.ENET_1588_CLK_EXT.outFreq, value: 50 MHz, enabled: true}
@@ -194,7 +198,9 @@ void BOARD_BootClockRUN(void)
     /* Set SystemCoreClock variable. */
     SystemCoreClock = BOARD_BOOTCLOCKRUN_CORE_CLOCK;
     /* Set enet timestamp clock source. */
-    CLOCK_SetEnetTime0Clock(SIM_ENET_1588T_CLK_SEL_CLKIN_CLK);
+    CLOCK_SetEnetTime0Clock(SIM_ENET_1588T_CLK_SEL_OSCERCLK_CLK);
+    /* Set RMII clock source. */
+    CLOCK_SetRmii0Clock(SIM_ENET_RMII_CLK_SEL_CLKIN_CLK);
 }
 
 /*******************************************************************************
