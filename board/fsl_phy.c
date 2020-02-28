@@ -35,7 +35,7 @@
  ******************************************************************************/
 
 /*! @brief Defines the timeout macro. */
-#define PHY_TIMEOUT_COUNT 0xFFFFFU
+#define PHY_TIMEOUT_COUNT 10000 // TSB 2/28/2020 Changed from 0xFFFFFU
 
 /*******************************************************************************
  * Prototypes
@@ -93,6 +93,8 @@ status_t PHY_Init(ENET_Type *base, uint32_t phyAddr, uint32_t srcClock_Hz)
     result = PHY_Write(base, phyAddr, PHY_BASICCONTROL_REG, PHY_BCTL_RESET_MASK);
     if (result == kStatus_Success)
     {
+//        result = PHY_Read(base, phyAddr, PHY_BASICSTATUS_REG, &bssReg);
+
         /* Set the negotiation. */
         result = PHY_Write(base, phyAddr, PHY_AUTONEG_ADVERTISE_REG,
                            (PHY_100BASETX_FULLDUPLEX_MASK | PHY_100BASETX_HALFDUPLEX_MASK |
