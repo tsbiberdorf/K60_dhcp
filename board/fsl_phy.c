@@ -281,9 +281,31 @@ status_t PHY_GetLinkSpeedDuplex(ENET_Type *base, uint32_t phyAddr, phy_speed_t *
     uint32_t data, ctlReg;
 
     /* Read the control two register. */
-    result = PHY_Read(base, phyAddr, PHY_CONTROL2_REG, &ctlReg);
+//    result = PHY_Read(base, phyAddr, PHY_CONTROL2_REG, &ctlReg); //@@@TSB moved register to read the basic status instead
+    result = PHY_Read(base, phyAddr, PHY_BASICSTATUS_REG, &ctlReg);
     if (result == kStatus_Success)
     {
+    	if( (ctlReg & (1<<14)) || (ctlReg & (1<<12)))
+    	{
+            /* Full duplex. */
+            *duplex = kPHY_FullDuplex;
+    	}
+    	else
+    	{
+            /* Half duplex. */
+            *duplex = kPHY_HalfDuplex;
+    	}
+
+    	if( (ctlReg & (1<<14)) || (ctlReg & (1<<13)))
+        {
+            /* 100M speed. */
+            *speed = kPHY_Speed100M;
+        }
+        else
+        { /* 10M speed. */
+            *speed = kPHY_Speed10M;
+        }
+#if 0
         data = ctlReg & PHY_BSTATUS_SPEEDUPLX_MASK;
         if ((PHY_CTL2_10FULLDUPLEX_MASK == data) || (PHY_CTL2_100FULLDUPLEX_MASK == data))
         {
@@ -306,6 +328,7 @@ status_t PHY_GetLinkSpeedDuplex(ENET_Type *base, uint32_t phyAddr, phy_speed_t *
         { /* 10M speed. */
             *speed = kPHY_Speed10M;
         }
+#endif
     }
 
     return result;
