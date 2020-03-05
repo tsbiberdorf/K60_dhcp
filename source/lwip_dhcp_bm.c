@@ -73,6 +73,7 @@
 /*******************************************************************************
 * Variables
 ******************************************************************************/
+static uint32_t tl_BreakNetworkFlag = 0;
 
 /*******************************************************************************
  * Code
@@ -156,6 +157,8 @@ static void print_dhcp_state(struct netif *netif)
                    ((u8_t *)&netif->netmask.addr)[3]);
             PRINTF(" IPv4 Gateway     : %u.%u.%u.%u\r\n\r\n", ((u8_t *)&netif->gw.addr)[0],
                    ((u8_t *)&netif->gw.addr)[1], ((u8_t *)&netif->gw.addr)[2], ((u8_t *)&netif->gw.addr)[3]);
+
+            tl_BreakNetworkFlag = 1;
         }
     }
 }
@@ -177,33 +180,41 @@ int main(void)
 
     time_init();
 
-    IP4_ADDR(&fsl_netif0_ipaddr, 0U, 0U, 0U, 0U);
-    IP4_ADDR(&fsl_netif0_netmask, 0U, 0U, 0U, 0U);
-    IP4_ADDR(&fsl_netif0_gw, 0U, 0U, 0U, 0U);
+//    IP4_ADDR(&fsl_netif0_ipaddr, 0U, 0U, 0U, 0U);
+//    IP4_ADDR(&fsl_netif0_netmask, 0U, 0U, 0U, 0U);
+//    IP4_ADDR(&fsl_netif0_gw, 0U, 0U, 0U, 0U);
+//
+//    lwip_init();
+//
+//    netif_add(&fsl_netif0, &fsl_netif0_ipaddr, &fsl_netif0_netmask, &fsl_netif0_gw, NULL, ethernetif_init,
+//              ethernet_input);
+//    netif_set_default(&fsl_netif0);
+//    netif_set_up(&fsl_netif0);
+//
+//    dhcp_start(&fsl_netif0);
+//
+//    PRINTF("\r\n************************************************\r\n");
+//    PRINTF(" DHCP example\r\n");
+//    PRINTF("************************************************\r\n");
+//
+//    while (1)
+//    {
+//        /* Poll the driver, get any outstanding frames */
+//        ethernetif_input(&fsl_netif0);
+//
+//        /* Handle all system timeouts for all core protocols */
+//        sys_check_timeouts();
+//
+//        /* Print DHCP progress */
+//        print_dhcp_state(&fsl_netif0);
+//
+//        if(tl_BreakNetworkFlag)
+//        	break;
+//    }
 
-    lwip_init();
-
-    netif_add(&fsl_netif0, &fsl_netif0_ipaddr, &fsl_netif0_netmask, &fsl_netif0_gw, NULL, ethernetif_init,
-              ethernet_input);
-    netif_set_default(&fsl_netif0);
-    netif_set_up(&fsl_netif0);
-
-    dhcp_start(&fsl_netif0);
-
-    PRINTF("\r\n************************************************\r\n");
-    PRINTF(" DHCP example\r\n");
-    PRINTF("************************************************\r\n");
-
-    while (1)
-    {
-        /* Poll the driver, get any outstanding frames */
-        ethernetif_input(&fsl_netif0);
-
-        /* Handle all system timeouts for all core protocols */
-        sys_check_timeouts();
-
-        /* Print DHCP progress */
-        print_dhcp_state(&fsl_netif0);
-    }
+    StartLwipTask();
+    vTaskStartScheduler();
+    for (;;)
+        ;
 }
 #endif
