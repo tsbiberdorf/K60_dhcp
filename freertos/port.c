@@ -387,8 +387,8 @@ void xPortSysTickHandler( void )
 	executes all interrupts must be unmasked.  There is therefore no need to
 	save and then restore the interrupt mask value as its value is already
 	known. */
-//	portDISABLE_INTERRUPTS();
-//	{
+	portDISABLE_INTERRUPTS();
+	{
 		/* Increment the RTOS tick. */
 //		if( xTaskIncrementTick() != pdFALSE )
 //		{
@@ -397,8 +397,8 @@ void xPortSysTickHandler( void )
 //			portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT;
 //		}
 //
-//	}
-//	portENABLE_INTERRUPTS();
+	}
+	portENABLE_INTERRUPTS();
 	time_isr();
 }
 
