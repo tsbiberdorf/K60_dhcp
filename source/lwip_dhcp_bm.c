@@ -78,13 +78,16 @@
  * Code
  ******************************************************************************/
 
-/*!
- * @brief Interrupt service for SysTick timer.
+/**
+ * @note use the FreeRTOS version of this irq handler
  */
-void SysTick_Handler(void)
-{
-    time_isr();
-}
+///*!
+// * @brief Interrupt service for SysTick timer.
+// */
+//void SysTick_Handler(void)
+//{
+//    time_isr();
+//}
 
 /*!
  * @brief Prints DHCP status of the interface when it has changed from last status.
