@@ -396,10 +396,10 @@ void xPortSysTickHandler( void )
 //			the PendSV interrupt.  Pend the PendSV interrupt. */
 //			portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT;
 //		}
-//
+
+		time_isr();
 	}
 	portENABLE_INTERRUPTS();
-	time_isr();
 }
 
 #if( configASSERT_DEFINED == 1 )
